@@ -1,17 +1,13 @@
-FROM ruby:2.5
-RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
-RUN mkdir /myapp
-WORKDIR /myapp
-COPY Gemfile /myapp/Gemfile
-COPY Gemfile.lock /myapp/Gemfile.lock
+FROM ruby:2.3.3
+
+# throw errors if Gemfile has been modified since Gemfile.lock
+RUN bundle config --global frozen 1
+
+WORKDIR /usr/src/app
+
+COPY Gemfile Gemfile.lock ./
 RUN bundle install
-COPY . /myapp
 
-# Add a script to be executed every time the container starts.
-COPY entrypoint.sh /usr/bin/
-RUN chmod +x /usr/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
-EXPOSE 3000
+COPY . .
 
-# Start the main process.
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["./hello world.rb"]
